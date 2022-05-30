@@ -12,8 +12,6 @@ services:
     image: confluentinc/cp-kafka:7.0.1
     container_name: broker
     ports:
-    # To learn about configuring Kafka for access across networks see
-    # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
       - "9092:9092"
     depends_on:
       - zookeeper
@@ -25,3 +23,17 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  mysql:
+    image: mysql:5.7.28
+    environment:
+            # MYSQL_USER:
+            #       MYSQL_PASSWORD:
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - '3306:3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  my-db:
