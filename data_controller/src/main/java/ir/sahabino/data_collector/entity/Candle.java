@@ -1,5 +1,6 @@
 package ir.sahabino.data_collector.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.kafka.common.serialization.Serializer;
@@ -8,20 +9,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+
 @Setter
 @Getter
-public class Candle implements Serializer {
-
+public class Candle {
+    @JsonProperty("open_time")
     private Long openTime;
+    @JsonProperty("open")
     private String open;
+    @JsonProperty("high")
     private String high;
+    @JsonProperty("low")
     private String low;
+    @JsonProperty("close")
     private String close;
+    @JsonProperty("volume")
     private String volume;
+    @JsonProperty("close_time")
     private Long closeTime;
+    @JsonProperty("quote_asset_volume")
     private String quoteAssetVolume;
+    @JsonProperty("number_of_trades")
     private Long numberOfTrades;
+    @JsonProperty("taker_buy_base_asset_volume")
     private String takerBuyBaseAssetVolume;
+    @JsonProperty("taker_buy_quote_asset_volume")
     private String takerBuyQuoteAssetVolume;
 
     private Candle(String open, String high, String low, String close) {
@@ -70,19 +82,6 @@ public class Candle implements Serializer {
     public Candle takerBuyQuoteAssetVolume(String takerBuyQuoteAssetVolume) {
         this.takerBuyQuoteAssetVolume = takerBuyQuoteAssetVolume;
         return this;
-    }
-
-    @Override
-    public byte[] serialize(String s, Object o) {
-
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos);
-        ) {
-            oos.writeObject(o);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            return new byte[0];
-        }
     }
 }
 
