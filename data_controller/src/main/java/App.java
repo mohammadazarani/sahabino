@@ -18,10 +18,6 @@ public class App {
         KafkaCandleProducer kafkaCandleProducer = KafkaCandleProducer.of(config, kafkaProducer);
 
 
-
-
-
-
 //        https://api.binance.com/api/v3/klines?symbol=BNBBTC&interval=1m&startTime=1000000
 
 
@@ -46,7 +42,12 @@ public class App {
 //        candlestickBars.forEach(System.out::println);
         for (Candlestick candlestickBar : candlestickBars) {
             System.out.println(candlestickBar);
-            kafkaCandleProducer.produce(Candle.build("open", "high", "low", "close"));
+            kafkaCandleProducer.produce(
+                    Candle.build(candlestickBar.getOpen(),
+                            candlestickBar.getHigh(),
+                            candlestickBar.getLow(),
+                            candlestickBar.getClose())
+            );
         }
 
     }
