@@ -31,7 +31,7 @@ public class Conf {
             e.printStackTrace();
         }
         config.kafkaBrokers = properties.getProperty("rules-evaluator.kafka.brokers");
-        config.kafkaTopic = properties.getProperty("rules-evaluator.kafka.topic");
+        config.kafkaTopic = properties.getProperty("rules-evaluator.kafka.topic.in");
 
 
         return config;
