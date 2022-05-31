@@ -12,6 +12,10 @@ public class Conf {
     private static Conf config;
     private String kafkaBrokers;
     private String kafkaTopic;
+    private String groupID;
+    private String autoCommit;
+    private String offsetRest;
+
 
     public static Conf load() {
         if (config != null)
@@ -32,6 +36,10 @@ public class Conf {
         }
         config.kafkaBrokers = properties.getProperty("rules-evaluator.kafka.brokers");
         config.kafkaTopic = properties.getProperty("rules-evaluator.kafka.topic.in");
+
+        config.groupID = properties.getProperty("rules-evaluator.kafka.group.id");
+        config.autoCommit = properties.getProperty("rules-evaluator.kafka.auto.commit");
+        config.offsetRest = properties.getProperty("rules-evaluator.kafka.offset.rest");
 
 
         return config;
