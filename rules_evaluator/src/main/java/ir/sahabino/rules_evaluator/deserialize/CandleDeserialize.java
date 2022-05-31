@@ -30,7 +30,11 @@ public class CandleDeserialize implements Deserializer<Candle> {
     @Override
     public Candle deserialize(String s, byte[] bytes) {
         try {
-            return new ObjectMapper().reader().readValue(bytes);
+
+            ObjectMapper om = new ObjectMapper();
+            System.out.println(om.readValue(bytes, Candle.class));
+            return om.readValue(bytes, Candle.class);
+//            return new ObjectMapper().reader().readValue(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
