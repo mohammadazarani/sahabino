@@ -3,13 +3,13 @@ package ir.sahabino.rules_evaluator.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
 @Entity
-public class Candle{
+@Table
+public class Candle {
 
     @JsonProperty("open_time")
     private Long openTime;
