@@ -4,6 +4,7 @@ package arani.abdollahzade.mohammad.backend.controller;
 import arani.abdollahzade.mohammad.backend.entity.Candle;
 import arani.abdollahzade.mohammad.backend.service.CandleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,9 @@ public class CandleController {
         this.candleService = candleService;
     }
 
+    @GetMapping("/getAll")
     public List<Candle> getCandles() {
         return candleService.getCandles();
     }
+
 }
