@@ -8,7 +8,7 @@ public class ConfTest {
 
     @Test
     public void load() {
-        Conf config = Conf.load();
+        KafkaConf config = KafkaConf.load();
         assertEquals(config.getKafkaBrokers(), "localhost:9092");
         assertEquals(config.getKafkaOutputTopic(), "crypto");
     }
