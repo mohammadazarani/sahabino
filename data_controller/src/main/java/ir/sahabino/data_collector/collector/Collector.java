@@ -12,6 +12,7 @@ import ir.sahabino.data_collector.factory.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,21 +30,28 @@ public class Collector {
         KafkaProducer<String, Candle> kafkaProducer = KafkaProducerFactory.createKafkaProducer(config);
         kafkaCandleProducer = KafkaCandleProducer.of(config, kafkaProducer);
         this.properties = properties;
+
     }
+
 
     //This Method Converted Collect and produce to decrease Candle object creation;
     public void collectAndProduce() {
-        candlestickBars = client.
-                getCandlestickBars(properties.getProperty(CollectorConfigValues.BINACE_MARKETS), CandlestickInterval.ONE_MINUTE);
+        String[] markets = properties.
+                getProperty(CollectorConfigValues.BINACE_MARKETS).trim().split("\\s*,\\s*");
+        for (String market : markets) {
 
-        for (Candlestick candlestickBar : candlestickBars) {
-            System.out.println(candlestickBar);
-            kafkaCandleProducer.produce(
-                    Candle.build(candlestickBar.getOpen(),
-                            candlestickBar.getHigh(),
-                            candlestickBar.getLow(),
-                            candlestickBar.getClose())
-            );
+            candlestickBars = client.
+                    getCandlestickBars(market, CandlestickInterval.ONE_MINUTE);
+
+            for (Candlestick candlestickBar : candlestickBars) {
+                System.out.println(candlestickBar);
+                kafkaCandleProducer.produce(
+                        Candle.build(candlestickBar.getOpen(),
+                                candlestickBar.getHigh(),
+                                candlestickBar.getLow(),
+                                candlestickBar.getClose())
+                );
+            }
         }
     }
 }
