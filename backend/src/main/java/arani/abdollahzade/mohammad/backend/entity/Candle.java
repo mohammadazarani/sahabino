@@ -4,8 +4,11 @@ package arani.abdollahzade.mohammad.backend.entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Entity;
+
 @Getter
 @Setter
+@Entity
 public class Candle {
     private Long id;
 
