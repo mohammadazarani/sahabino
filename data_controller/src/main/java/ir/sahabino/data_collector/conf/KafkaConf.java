@@ -7,18 +7,18 @@ import java.io.InputStream;
 import java.util.Properties;
 
 
-public class Conf {
-    private static Conf config;
+public class KafkaConf {
+    private static KafkaConf config;
     @Getter
     private String kafkaBrokers;
     @Getter
     private String kafkaOutputTopic;
 
-    public static Conf load() {
+    public static KafkaConf load() {
         if (config != null)
             return config;
 
-        config = new Conf();
+        config = new KafkaConf();
         InputStream inputStream = Thread
                 .currentThread()
                 .getContextClassLoader()
