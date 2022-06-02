@@ -1,4 +1,5 @@
 package ir.sahabino.data_collector.collector;
 
-public class BTCCollector implements Collector {
+public class BTCCollector extends Collector {
+
 }
