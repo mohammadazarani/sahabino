@@ -31,11 +31,10 @@ public class Collector {
         this.properties = properties;
     }
 
-
-    public List<Candle> collect() {
+    //This Method Converted Collect and produce to decrease Candle object creation;
+    public void collectAndProduce() {
         candlestickBars = client.
                 getCandlestickBars(properties.getProperty(CollectorConfigValues.BINACE_MARKETS), CandlestickInterval.ONE_MINUTE);
-
 
         for (Candlestick candlestickBar : candlestickBars) {
             System.out.println(candlestickBar);
