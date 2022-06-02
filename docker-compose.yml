@@ -25,15 +25,19 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
   mysql:
-    image: mysql:5.7.28
+    image: mysql:latest
     environment:
       MYSQL_USER: kafka
       MYSQL_PASSWORD: kafka
       MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: candles
+      MYSQL_ROOT_HOST: '%'
     ports:
       - '3306:3306'
     volumes:
       - my-db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
 
 volumes:
   my-db:
