@@ -20,7 +20,7 @@ import java.util.*;
 public class KafkaStreamFactory {
 
     //    Map<SimpleDateFormat, Integer>
-    public static KafkaStreams createKafkaStream(Conf conf, List<Candle> result) {
+    public static KafkaStreams createKafkaStream(Conf conf) {
         Properties props = new Properties();
         String appID = "streams-pipe12";
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, appID);
