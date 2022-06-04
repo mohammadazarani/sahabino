@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 
 @Setter
 @Getter
@@ -31,17 +33,21 @@ public class Candle {
     @JsonProperty("taker_buy_quote_asset_volume")
     private String takerBuyQuoteAssetVolume;
 
-    private Candle(String open, String high, String low, String close) {
+    private Date data;
+
+    private Candle(String open, String high, String low, String close, Long openTime, Long closeTime) {
         this.open = open;
         this.high = high;
         this.low = low;
         this.close = close;
+        this.closeTime = closeTime;
+        this.openTime = openTime;
     }
 
     public Candle(){}
 
-    public static Candle build(String open, String high, String low, String close) {
-        return new Candle(open, high, low, close);
+    public static Candle build(String open, String high, String low, String close, Long openTime, Long closeTime) {
+        return new Candle(open, high, low, close, openTime, closeTime);
     }
 
     public Candle openTime(Long openTime) {
