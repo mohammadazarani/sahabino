@@ -12,7 +12,6 @@ import ir.sahabino.data_collector.factory.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -49,7 +48,9 @@ public class Collector {
                         Candle.build(candlestickBar.getOpen(),
                                 candlestickBar.getHigh(),
                                 candlestickBar.getLow(),
-                                candlestickBar.getClose())
+                                candlestickBar.getClose(),
+                                candlestickBar.getOpenTime(),
+                                candlestickBar.getCloseTime())
                 );
             }
         }
