@@ -16,14 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RuleParser {
-    private String fileName;
+    private final static String path = "./src/main/resources/";
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//
+//    public RuleParser(String fileName) {
+//        this.fileName = path + fileName;
+//    }
 
-    public RuleParser(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void parse() {
+    public  static List<Rule>  parse(String fileName) {
+        fileName = path + fileName;
         List<Rule> rules = new ArrayList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
@@ -61,11 +62,13 @@ public class RuleParser {
                 }
             }
 
+
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
+        return rules;
     }
-    private Operand extractOperand(Element element, String operandName){
+    private static Operand extractOperand(Element element, String operandName){
         NodeList firstOperandE = element.getElementsByTagName(operandName);
         String operandField = firstOperandE.item(0).getAttributes().getNamedItem("field").getTextContent();
         String type = firstOperandE.item(0).getAttributes().getNamedItem("type").getTextContent();
@@ -75,9 +78,11 @@ public class RuleParser {
     }
 
     public static void main(String[] args) {
-        String file = "./src/main/resources/rules.xml";
-        RuleParser ruleParser = new RuleParser(file);
-        ruleParser.parse();
+        String file = "rules.xml";
+        List<Rule> rules = RuleParser.parse(file);
+        for (Rule rule : rules) {
+            System.out.println(rule.getMarket());
+        }
     }
 
 }
