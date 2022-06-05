@@ -10,6 +10,7 @@ public class BinanceCollectorFactory {
     public static Collector createBinanceCollector(CollectorConfig conf){
         Properties properties = new Properties();
         properties.put(CollectorConfigValues.BINACE_MARKETS, conf.getMarkets());
+        properties.put(CollectorConfigValues.REQUEST_PERIOD, conf.getRequest_period());
         return new Collector(properties);
     }
 }
