@@ -12,9 +12,9 @@ import ir.sahabino.data_collector.factory.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class Collector {
     private final Properties properties;
@@ -36,22 +36,43 @@ public class Collector {
 
     //This Method Converted Collect and produce to decrease Candle object creation;
     public void collectAndProduce() {
-        String[] markets = properties.
-                getProperty(CollectorConfigValues.BINACE_MARKETS).trim().split("\\s*,\\s*");
+        Long serverTime = client.getServerTime();
+        int request_period = Integer.parseInt(properties.getProperty(CollectorConfigValues.REQUEST_PERIOD));
+        int limit = request_period / (60 * 1000);
+        if (limit == 0) {
+            throw new PeriodException();
+        }
+
+        String[] markets = properties.getProperty(CollectorConfigValues.BINACE_MARKETS).
+                trim().
+                split("\\s*,\\s*");
         for (String market : markets) {
 
             candlestickBars = client.
-                    getCandlestickBars(market, CandlestickInterval.ONE_MINUTE);
+                    getCandlestickBars(market, CandlestickInterval.ONE_MINUTE,
+                            (int) limit, serverTime - request_period, serverTime);
 
             for (Candlestick candlestickBar : candlestickBars) {
-                System.out.println(candlestickBar);
-                kafkaCandleProducer.produce(
+                kafkaCandleProducer.produce(market,
                         Candle.build(candlestickBar.getOpen(),
                                 candlestickBar.getHigh(),
                                 candlestickBar.getLow(),
-                                candlestickBar.getClose())
+                                candlestickBar.getClose(),
+                                candlestickBar.getOpenTime(),
+                                candlestickBar.getCloseTime())
                 );
             }
+        }
+    }
+
+    public void waitOn() {
+        long request_period = Long.parseLong(properties.getProperty(CollectorConfigValues.REQUEST_PERIOD));
+//        Long limit = request_period;
+        try {
+//            TimeUnit.SECONDS.sleep();
+            Thread.sleep(request_period);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

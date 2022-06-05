@@ -1,14 +1,17 @@
 package ir.sahabino.rules_evaluator.entity;
 
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Getter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Getter
-@Entity
 @Table
+@Entity
 public class Candle {
 
     @JsonProperty("open_time")
@@ -34,18 +37,30 @@ public class Candle {
     @JsonProperty("taker_buy_quote_asset_volume")
     private String takerBuyQuoteAssetVolume;
 
-    private Candle(String open, String high, String low, String close) {
+    final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+    public String getCandleCloseData(){
+        return this.format.format(new Date(closeTime));
+    }
+
+    public String getCandleOpenData(){
+        return this.format.format(new Date(openTime));
+    }
+
+    private Candle(String open, String high, String low, String close, Long openTime, Long closeTime) {
         this.open = open;
         this.high = high;
         this.low = low;
         this.close = close;
+        this.closeTime = closeTime;
+        this.openTime = openTime;
     }
 
     public Candle() {
     }
 
-    public static Candle build(String open, String high, String low, String close) {
-        return new Candle(open, high, low, close);
+    public static Candle build(String open, String high, String low, String close,  Long openTime, Long closeTime) {
+        return new Candle(open, high, low, close, openTime, closeTime);
     }
 
     public Candle openTime(Long openTime) {

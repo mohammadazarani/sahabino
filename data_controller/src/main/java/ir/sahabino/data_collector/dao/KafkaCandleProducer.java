@@ -17,23 +17,18 @@ public class KafkaCandleProducer {
         this.kafkaProducer = kafkaProducer;
     }
 
-    public static KafkaCandleProducer of(KafkaConf config, KafkaProducer<String, Candle> kafkaProducer){
+    public static KafkaCandleProducer of(KafkaConf config, KafkaProducer<String, Candle> kafkaProducer) {
         return new KafkaCandleProducer(config, kafkaProducer);
     }
 
-    public void produce(Candle candle) {
-        kafkaProducer.send(new ProducerRecord<>(
-                config.getKafkaOutputTopic(),
-                candle
-          ));
+    public void produce(String key,Candle candle) {
+        kafkaProducer.send(new ProducerRecord<>(config.getKafkaOutputTopic(), key, candle));
         int candles = candlesCount.incrementAndGet();
-        System.err.println(candles);
-        if (candles % 2 == 0){
-            flush();
-        }
+        flush();
+
     }
 
-    public void flush(){
+    public void flush() {
         kafkaProducer.flush();
     }
 }

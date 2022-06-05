@@ -11,6 +11,9 @@ public class CollectorConfig {
     private static CollectorConfig config;
     @Getter
     private String markets;
+    @Getter
+    private String request_period;
+
     public static CollectorConfig load(){
         if (config != null)
             return config;
@@ -23,6 +26,7 @@ public class CollectorConfig {
         try {
             properties.load(inputStream);
             config.markets = properties.getProperty("markets");
+            config.request_period = properties.getProperty("request_period");
         } catch (IOException e) {
             e.printStackTrace();
         }
