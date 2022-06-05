@@ -10,7 +10,7 @@ import java.util.Optional;
 public class Indicator {
     private Rule rule;
     private CircularFifoQueue<Candle> candleQueue;
-
+    private Condition ruleCondition;
     private Optional<Long> firstSum;
     private Optional<Long> secondSum;
 
@@ -25,7 +25,7 @@ public class Indicator {
         if (firstSum.isPresent()) {
             firstSum = calculateSum(Integer.parseInt(rule.getFirstOperand().getPeriod()), firstOperandMethod);
             secondSum = calculateSum(Integer.parseInt(rule.getSecondOperand().getPeriod()), secondOperandMethod);
-        }else{
+        } else {
             generateNewSum(removedElement, firstOperandMethod, secondOperandMethod);
         }
     }
@@ -75,7 +75,13 @@ public class Indicator {
         }
     }
 
-    private boolean rule
+    private int ruleConditionMeet(Condition condition) {
+        return condition.compare(firstSum, secondSum);
+    }
+
+    private Optional<Condition> getRuleCondition(String conditionName) {
+        return Condition.fromConditionName(conditionName);
+    }
 
 //    public double getAvg() {
 //        if (sum.isPresent()) {
