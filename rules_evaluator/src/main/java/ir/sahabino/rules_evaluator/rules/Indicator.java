@@ -15,27 +15,40 @@ public class Indicator {
     private Optional<Long> secondSum;
 
 
-    public void operate(Candle candle) {
+    public void operate(Candle candle) throws InvocationTargetException, IllegalAccessException {
         Optional<Candle> removedElement = candleQueue.put(candle);
-        if (removedElement.isPresent()) {
-            Candle removed = removedElement.get();
-        }
+
 
         Method firstOperandMethod = getFieldToOperateOn(rule.getFirstOperand().getField());
         Method secondOperandMethod = getFieldToOperateOn(rule.getSecondOperand().getField());
 
-        firstSum = calculateSum(Integer.parseInt(rule.getFirstOperand().getPeriod()), firstOperandMethod);
-        secondSum = calculateSum(Integer.parseInt(rule.getSecondOperand().getPeriod()), secondOperandMethod);
+        if (firstSum.isPresent()) {
+            firstSum = calculateSum(Integer.parseInt(rule.getFirstOperand().getPeriod()), firstOperandMethod);
+            secondSum = calculateSum(Integer.parseInt(rule.getSecondOperand().getPeriod()), secondOperandMethod);
+        }else{
+            generateNewSum(removedElement, firstOperandMethod, secondOperandMethod);
+        }
+    }
+
+    private void generateNewSum(Optional<Candle> removedElement, Method firstOperandMethod, Method secondOperandMethod) throws InvocationTargetException, IllegalAccessException {
+        Candle removed = removedElement.get();
+        Long firstSumValue = this.firstSum.get();
+        long newFristValue = firstSumValue - Long.parseLong((String) firstOperandMethod.invoke(removed));
+        Long secondSumValue = this.secondSum.get();
+        long newSecondValue = secondSumValue - Long.parseLong((String) firstOperandMethod.invoke(removed));
+
+        this.firstSum = Optional.of(newFristValue);
+        this.secondSum = Optional.of(newSecondValue);
     }
 
 
     //TODO getClose shall be change, based on rules config
-    private Optional<Long> calculateSum(int firstPeriod, Method method) {
+    private Optional<Long> calculateSum(int period, Method method) {
         long currentTimestamp = Instant.now().toEpochMilli();
-        long periodInMilliSecond = firstPeriod * 24 * 60 * 60 * 1000;
+        long periodInMilliSecond = period * 24 * 60 * 60 * 1000;
         long threshold = 1000 * 10; // 10-second
-        firstSum = candleQueue.stream()
-                .filter(candle -> candle.getOpenTime() - periodInMilliSecond > threshold)
+        Optional<Long> sum = candleQueue.stream()
+                .filter(candle -> currentTimestamp - candle.getOpenTime() + threshold > periodInMilliSecond)
                 .map(candle -> {
                     try {
                         return Long.parseLong((String) method.invoke(candle));
@@ -44,7 +57,7 @@ public class Indicator {
                     }
                     return 0L;
                 }).reduce(Long::sum);
-        return firstSum;
+        return sum;
     }
 
     private Method getFieldToOperateOn(String field) {
@@ -55,12 +68,14 @@ public class Indicator {
                 case "open":
                     return Candle.class.getMethod("getOpen", null);
                 default:
-                    throw new NoSuchRuleFieldExcetion();
+                    throw new NoSuchRuleFieldException();
             }
         } catch (NoSuchMethodException e) {
-            throw new NoSuchRuleFieldExcetion();
+            throw new NoSuchRuleFieldException();
         }
     }
+
+    private boolean rule
 
 //    public double getAvg() {
 //        if (sum.isPresent()) {
