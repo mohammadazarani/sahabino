@@ -25,11 +25,12 @@ public class Indicator {
         if (removedElement.isPresent()) {
             E removed = removedElement.get();
         }
-        firstSum = calculateSum(rule.getFirstOperand().getPeriod(),);
+        firstSum = calculateSum(rule.getFirstOperand().getPeriod(), );
         secondSum = calculateSum(rule.getSecondOperand().getPeriod());
     }
 
 1
+
     //TODO getClose shall be change, based on rules config
     private Optional<Long> calculateFirstSum(int firstPeriod) {
         long currentTimestamp = Instant.now().toEpochMilli();
@@ -43,8 +44,17 @@ public class Indicator {
     }
 
 
-    private Method getFieldToOperateOn(String field){
-        field.
+    private Method getFieldToOperateOn(String field) {
+        try {
+            switch (field.toLowerCase().trim()) {
+                case "close":
+                    return Candle.class.getMethod("getClose", null);
+                case "open":
+                    return Candle.class.getMethod("getOpen", null);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
 //    public double getAvg() {
