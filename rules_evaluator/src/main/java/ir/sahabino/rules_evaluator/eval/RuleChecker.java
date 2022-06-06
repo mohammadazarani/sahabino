@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Stream;
 
 @Getter
 @ToString(of = "rule")
@@ -13,12 +15,13 @@ public class RuleChecker {
     ArrayBlockingQueue<Candle> arrayBlockingQueue;
 
     private Rule rule;
-    public RuleChecker(Rule rule, ArrayBlockingQueue<Candle> arrayBlockingQueue){
+
+    public RuleChecker(Rule rule, ArrayBlockingQueue<Candle> arrayBlockingQueue) {
         this.arrayBlockingQueue = arrayBlockingQueue;
         this.rule = rule;
     }
 
-    public double avg(long beforePeriod, String field){
+    public double avg(long beforePeriod, String field) {
 
         double sum = 0D;
         int counter = 0;
@@ -48,7 +51,7 @@ public class RuleChecker {
     }
 
 
-    public boolean meetCondition() {
+    public Alert meetCondition() {
         long currentTimestamp = Instant.now().toEpochMilli();
         long firstPeriodDayMili = Long.parseLong(rule.getFirstOperand().getPeriod()) * 24 * 60 * 60 * 1000;
         long firstBeforePeriod = currentTimestamp - firstPeriodDayMili;
@@ -57,7 +60,27 @@ public class RuleChecker {
         long secondBeforePeriod = currentTimestamp - secondPeriodDayMili;
 
 
+        System.out.println(arrayBlockingQueue.size());
+        Stream<Candle> candleStream = arrayBlockingQueue.stream().
+                filter(c1 -> c1.getMarket().equals(rule.getMarket()));
+        System.out.println(candleStream);
+        System.out.println(candleStream.count());
+        Optional<Candle> optionalLastCandle = arrayBlockingQueue.stream().
+                filter(c1 -> c1.getMarket().equals(rule.getMarket())).
+                reduce((c1, c2) -> c2);
 
+
+        System.out.println(arrayBlockingQueue.stream().
+                filter(c1 -> c1.getMarket().equals(rule.getMarket())).
+                count());
+//        Candle lastCandle = null;
+//        Object[] objects = arrayBlockingQueue.toArray();
+//        for (int i = arrayBlockingQueue.size() - 1; i >= 0; i--) {
+//            if(arrayBlockingQueue.)
+//        }
+
+        System.out.println("hhhhhhhh");
+//        System.out.println(lastCandle.getCandleCloseData());
         double first = avg(firstBeforePeriod, rule.getFirstOperand().getField());
         double second = avg(secondBeforePeriod, rule.getSecondOperand().getField());
 
@@ -67,11 +90,21 @@ public class RuleChecker {
                 System.out.println("------");
                 System.out.println(first);
                 System.out.println(second);
-                return first > second;
+                if (first > second)
+                    if (optionalLastCandle.isPresent()) {
+                        Candle lastCandle = optionalLastCandle.get();
+                        return new Alert(rule.getRuleName(), rule.getMarket(), lastCandle.getClose(), lastCandle.getCandleOpenData());
+                    }
+                return null;
             case "lt":
-                return first < second;
+                if (first < second)
+                    if (optionalLastCandle.isPresent()) {
+                        Candle lastCandle = optionalLastCandle.get();
+                        return new Alert(rule.getRuleName(), rule.getMarket(), lastCandle.getClose(), lastCandle.getCandleOpenData());
+                    }
+                return null;
             default:
-                return false;
+                return null;
         }
     }
 }
