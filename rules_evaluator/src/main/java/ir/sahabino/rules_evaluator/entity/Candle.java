@@ -2,17 +2,22 @@ package ir.sahabino.rules_evaluator.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Getter
-@Table
-@Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Candle {
+
+    private Long id;
+    @Setter
+    private String market;
 
     @JsonProperty("open_time")
     private Long openTime;
