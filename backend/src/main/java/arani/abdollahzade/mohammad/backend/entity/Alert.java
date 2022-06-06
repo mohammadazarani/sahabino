@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Table
 public class Alert {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     String ruleName;
     String market;
