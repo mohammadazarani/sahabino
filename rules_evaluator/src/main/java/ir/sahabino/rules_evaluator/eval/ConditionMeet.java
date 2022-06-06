@@ -6,13 +6,13 @@ import java.sql.*;
 import java.util.List;
 
 public class ConditionMeet implements Runnable {
-    List<Rule> rules;
+    List<RuleChecker> ruleCheckers;
     Connection connection;
     Statement stmt;
     ResultSet rs;
 
-    public ConditionMeet(List<Rule> rules) {
-        this.rules = rules;
+    public ConditionMeet(List<RuleChecker> ruleCheckers) {
+        this.ruleCheckers = ruleCheckers;
     }
 
     public void saveInDatabase(String rule_name, String market) throws SQLException {
@@ -29,10 +29,10 @@ public class ConditionMeet implements Runnable {
     @Override
     public void run() {
         while (true) {
-            for (Rule rule : rules) {
-                if (rule.meetCondition()) {
-                    System.out.println(rule);
-                    saveInDatabase(rule.getRuleName(), rule.getMarket());
+            for (RuleChecker ruleChecker : ruleCheckers) {
+                if (ruleChecker.meetCondition()) {
+                    System.out.println(ruleChecker);
+                    saveInDatabase(ruleChecker.getRuleName(), ruleChecker.getMarket());
                 }
             }
             try {
