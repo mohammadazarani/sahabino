@@ -1,22 +1,22 @@
 package arani.abdollahzade.mohammad.backend.service;
 
-import arani.abdollahzade.mohammad.backend.entity.Candle;
-import arani.abdollahzade.mohammad.backend.repository.CandleRepository;
+import arani.abdollahzade.mohammad.backend.entity.Alert;
+import arani.abdollahzade.mohammad.backend.repository.AlertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CandleService {
-    private final CandleRepository candleRepository;
+public class AlertService {
+    private final AlertRepository alertRepository;
 
     @Autowired
-    public CandleService(CandleRepository candleRepository) {
-        this.candleRepository = candleRepository;
+    public AlertService(AlertRepository alertRepository) {
+        this.alertRepository = alertRepository;
     }
 
-    public List<Candle> getCandles(){
-        return candleRepository.findAll();
+    public List<Alert> getAlerts(){
+        return alertRepository.findAll();
     }
 }
