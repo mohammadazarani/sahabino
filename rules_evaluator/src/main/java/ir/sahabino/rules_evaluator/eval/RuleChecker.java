@@ -7,8 +7,9 @@ import java.time.Instant;
 import java.util.concurrent.ArrayBlockingQueue;
 
 @Getter
-public class Rule {
+public class RuleChecker {
     ArrayBlockingQueue<Candle> arrayBlockingQueue;
+
 
     private String ruleName;
     private String market;
@@ -18,7 +19,7 @@ public class Rule {
     private String secondField;
     private String operator;
 
-    public Rule(String ruleName, ArrayBlockingQueue<Candle> arrayBlockingQueue, String market, long firstPeriod, long secondPeriod, String firstField, String secondField, String operator) {
+    public RuleChecker(String ruleName, ArrayBlockingQueue<Candle> arrayBlockingQueue, String market, long firstPeriod, long secondPeriod, String firstField, String secondField, String operator) {
         this.arrayBlockingQueue = arrayBlockingQueue;
         this.firstPeriod = firstPeriod;
         this.secondPeriod = secondPeriod;
@@ -29,10 +30,10 @@ public class Rule {
         this.operator = operator;
     }
 
-    public double avg(long beforePeriod){
+    public double avg(long beforePeriod, String field){
         double sum = 0D;
         int counter = 0;
-        if (firstField.equals("close")) {
+        if (field.equals("close")) {
             for (Candle candle : arrayBlockingQueue) {
                 if (candle.getMarket().equals(this.market)) {
                     if (candle.getOpenTime() > beforePeriod) {
@@ -42,7 +43,7 @@ public class Rule {
                 }
             }
         }
-        if (firstField.equals("open")) {
+        if (field.equals("open")) {
             for (Candle candle : arrayBlockingQueue) {
                 if (candle.getMarket().equals(this.market)) {
                     if (candle.getOpenTime() > beforePeriod) {
@@ -78,8 +79,8 @@ public class Rule {
         long secondPeriodDayMili = secondPeriod * 24 * 60 * 60 * 1000;
         long secondBeforePeriod = currentTimestamp - secondPeriodDayMili;
 
-        double first = avg(firstBeforePeriod);
-        double second = avg(secondBeforePeriod);
+        double first = avg(firstBeforePeriod, firstField);
+        double second = avg(secondBeforePeriod, secondField);
 
 
         switch (this.operator) {
