@@ -2,40 +2,29 @@ package ir.sahabino.rules_evaluator.eval;
 
 import ir.sahabino.rules_evaluator.entity.Candle;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.util.concurrent.ArrayBlockingQueue;
 
 @Getter
+@ToString(of = "rule")
 public class RuleChecker {
     ArrayBlockingQueue<Candle> arrayBlockingQueue;
 
-
-    private String ruleName;
-    private String market;
-    private long firstPeriod;
-    private long secondPeriod;
-    private String firstField;
-    private String secondField;
-    private String operator;
-
-    public RuleChecker(String ruleName, ArrayBlockingQueue<Candle> arrayBlockingQueue, String market, long firstPeriod, long secondPeriod, String firstField, String secondField, String operator) {
+    private Rule rule;
+    public RuleChecker(Rule rule, ArrayBlockingQueue<Candle> arrayBlockingQueue){
         this.arrayBlockingQueue = arrayBlockingQueue;
-        this.firstPeriod = firstPeriod;
-        this.secondPeriod = secondPeriod;
-        this.firstField = firstField;
-        this.secondField = secondField;
-        this.market = market;
-        this.ruleName = ruleName;
-        this.operator = operator;
+        this.rule = rule;
     }
 
     public double avg(long beforePeriod, String field){
+
         double sum = 0D;
         int counter = 0;
         if (field.equals("close")) {
             for (Candle candle : arrayBlockingQueue) {
-                if (candle.getMarket().equals(this.market)) {
+                if (candle.getMarket().equals(rule.getMarket())) {
                     if (candle.getOpenTime() > beforePeriod) {
                         sum += Double.parseDouble(candle.getClose());
                         counter++;
@@ -45,7 +34,7 @@ public class RuleChecker {
         }
         if (field.equals("open")) {
             for (Candle candle : arrayBlockingQueue) {
-                if (candle.getMarket().equals(this.market)) {
+                if (candle.getMarket().equals(rule.getMarket())) {
                     if (candle.getOpenTime() > beforePeriod) {
                         sum += Double.parseDouble(candle.getOpen());
                         counter++;
@@ -58,32 +47,22 @@ public class RuleChecker {
         return sum / counter;
     }
 
-    @Override
-    public String toString() {
-        return "Rule{" +
-                "ruleName='" + ruleName + '\'' +
-                ", market='" + market + '\'' +
-                ", firstPeriod=" + firstPeriod +
-                ", secondPeriod=" + secondPeriod +
-                ", firstField='" + firstField + '\'' +
-                ", secondField='" + secondField + '\'' +
-                ", operator='" + operator + '\'' +
-                '}';
-    }
 
     public boolean meetCondition() {
         long currentTimestamp = Instant.now().toEpochMilli();
-        long firstPeriodDayMili = firstPeriod * 24 * 60 * 60 * 1000;
+        long firstPeriodDayMili = Long.parseLong(rule.getFirstOperand().getPeriod()) * 24 * 60 * 60 * 1000;
         long firstBeforePeriod = currentTimestamp - firstPeriodDayMili;
 
-        long secondPeriodDayMili = secondPeriod * 24 * 60 * 60 * 1000;
+        long secondPeriodDayMili = Long.parseLong(rule.getSecondOperand().getPeriod()) * 24 * 60 * 60 * 1000;
         long secondBeforePeriod = currentTimestamp - secondPeriodDayMili;
 
-        double first = avg(firstBeforePeriod, firstField);
-        double second = avg(secondBeforePeriod, secondField);
 
 
-        switch (this.operator) {
+        double first = avg(firstBeforePeriod, rule.getFirstOperand().getField());
+        double second = avg(secondBeforePeriod, rule.getSecondOperand().getField());
+
+
+        switch (rule.getOperator()) {
             case "gt":
                 System.out.println("------");
                 System.out.println(first);

@@ -29,10 +29,9 @@ public class ConditionMeet implements Runnable {
     @Override
     public void run() {
         while (true) {
-            for (RuleChecker ruleChecker : ruleCheckers) {
+            for (RuleChecker ruleChecker : this.ruleCheckers) {
                 if (ruleChecker.meetCondition()) {
-                    System.out.println(ruleChecker);
-                    saveInDatabase(ruleChecker.getRuleName(), ruleChecker.getMarket());
+                    saveInDatabase(ruleChecker.getRule().getRuleName(), ruleChecker.getRule().getMarket());
                 }
             }
             try {
