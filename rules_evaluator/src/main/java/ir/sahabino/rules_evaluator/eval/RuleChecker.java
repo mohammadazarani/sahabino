@@ -7,7 +7,6 @@ import lombok.ToString;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.stream.Stream;
 
 @Getter
 @ToString(of = "rule")
@@ -60,36 +59,19 @@ public class RuleChecker {
         long secondBeforePeriod = currentTimestamp - secondPeriodDayMili;
 
 
-        System.out.println(arrayBlockingQueue.size());
-        Stream<Candle> candleStream = arrayBlockingQueue.stream().
-                filter(c1 -> c1.getMarket().equals(rule.getMarket()));
-        System.out.println(candleStream);
-        System.out.println(candleStream.count());
         Optional<Candle> optionalLastCandle = arrayBlockingQueue.stream().
                 filter(c1 -> c1.getMarket().equals(rule.getMarket())).
                 reduce((c1, c2) -> c2);
 
 
-        System.out.println(arrayBlockingQueue.stream().
-                filter(c1 -> c1.getMarket().equals(rule.getMarket())).
-                count());
-//        Candle lastCandle = null;
-//        Object[] objects = arrayBlockingQueue.toArray();
-//        for (int i = arrayBlockingQueue.size() - 1; i >= 0; i--) {
-//            if(arrayBlockingQueue.)
-//        }
 
-        System.out.println("hhhhhhhh");
-//        System.out.println(lastCandle.getCandleCloseData());
+
         double first = avg(firstBeforePeriod, rule.getFirstOperand().getField());
         double second = avg(secondBeforePeriod, rule.getSecondOperand().getField());
 
 
         switch (rule.getOperator()) {
             case "gt":
-                System.out.println("------");
-                System.out.println(first);
-                System.out.println(second);
                 if (first > second)
                     if (optionalLastCandle.isPresent()) {
                         Candle lastCandle = optionalLastCandle.get();
