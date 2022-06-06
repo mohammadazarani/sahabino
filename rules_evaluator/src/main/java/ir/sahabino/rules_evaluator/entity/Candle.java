@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString(of = {"openTime", "open", "close", "closeTime", "market"})
 public class Candle {
 
     private Long id;
@@ -66,6 +68,11 @@ public class Candle {
 
     public static Candle build(String open, String high, String low, String close,  Long openTime, Long closeTime) {
         return new Candle(open, high, low, close, openTime, closeTime);
+    }
+
+    public Candle market(String market){
+        this.market = market;
+        return this;
     }
 
     public Candle openTime(Long openTime) {
