@@ -33,3 +33,8 @@ buildNumber.properties
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+
+data_controller/.idea/compiler.xml
+data_controller/.idea/misc.xml
+rules_evaluator/.idea/compiler.xml
+
