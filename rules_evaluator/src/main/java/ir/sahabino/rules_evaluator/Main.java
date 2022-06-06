@@ -46,13 +46,9 @@ public class Main {
                 candles.add(candle);
 
             }
-            Thread.sleep(1000);
-//
-//                BTCandleQueue.put(candle);
-//                r
-//            }
-//            System.out.println(records.count());
-//            Thread.sleep(1000);
+            //TODO it shall be configurable
+
+            Thread.sleep(3*60*1000);
         }
 
 
