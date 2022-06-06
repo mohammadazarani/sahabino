@@ -1,5 +1,7 @@
 package ir.sahabino.rules_evaluator.rules;
 
+import ir.sahabino.rules_evaluator.eval.Rule;
+import ir.sahabino.rules_evaluator.rules.Operand;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,10 +20,8 @@ import java.util.List;
 public class RuleParser {
     private final static String path = "./src/main/resources/";
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//
-//    public RuleParser(String fileName) {
-//        this.fileName = path + fileName;
-//    }
+
+
 
     public  static List<Rule>  parse(String fileName) {
         fileName = path + fileName;
@@ -47,13 +47,14 @@ public class RuleParser {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element element = (Element) node;
-                    String id = element.getAttribute("id");
+                    String ruleName = element.getAttribute("name");
 
                     // market
                     String market = element.getElementsByTagName("market").item(0).getTextContent();
                     String operator = element.getElementsByTagName("operator").item(0).getTextContent();
                     //first operand
                     rules.add(new Rule(
+                            ruleName,
                             market,
                             operator,
                             extractOperand(element, "first-operand"),
